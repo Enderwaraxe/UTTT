@@ -10,7 +10,7 @@ class BaseTicTacToe:
     def __init__(self):
         self.trace = []
         self.board = [0]*9
-        self.status = "incomplete"
+        self.status = ""
     def isBoardWon(self):
         if ((self.board[0] == self.board[1] and self.board[1] == self.board[2] and self.board[0] != 0) or (self.board[3] == self.board[4] and self.board[4] == self.board[5] and self.board[3] != 0) or (self.board[6] == self.board[7] and self.board[7] == self.board[8] and self.board[6] != 0) or (self.board[0] == self.board[3] and self.board[3] == self.board[6] and self.board[0] != 0) or (self.board[1] == self.board[4] and self.board[4] == self.board[7] and self.board[1] != 0) or (self.board[2] == self.board[5] and self.board[5] == self.board[8] and self.board[2] != 0) or (self.board[0] == self.board[4] and self.board[4] == self.board[8] and self.board[0] != 0) or (self.board[2] == self.board[4] and self.board[4] == self.board[6] and self.board[2] != 0)):
             return True
@@ -25,15 +25,15 @@ class BaseTicTacToe:
         self.board[move-1] = player
         if (self.isBoardWon()):
             if (player == 1):
-                self.status = "xwins"
+                self.status = "x"
             else:
-                self.status = "owins"
+                self.status = "o"
         elif len(self.trace) >= 9:
-            self.status = "tie"
+            self.status = "t"
 
     def reset(self):
         self.board = [0]*9
-        self.status = "incomplete"
+        self.status = ""
         self.trace.clear()
         
     def isTaken(self, pos):
@@ -59,7 +59,8 @@ class UltimateTicTacToe:
         self.bigboard = []
         for i in range(0, 9):
             self.bigboard.append(BaseTicTacToe())
-        self.trace = []
+        self.previousmove = None
+        self.depth = 0
         self.status = ''
         self.xwins = 0
         self.owins = 0
@@ -69,58 +70,58 @@ class UltimateTicTacToe:
         self.bigboard = []
         for i in range(0, 9):
             self.bigboard.append(BaseTicTacToe())
-        self.trace = []
+        self.previousmove = None
         self.status = ''
+        self.depth = 0
     def isWon(self):
-        if ((self.bigboard[0].getStatus() == self.bigboard[1].getStatus() and self.bigboard[1].getStatus() == self.bigboard[2].getStatus() and self.bigboard[0].getStatus() !=  "incomplete" and self.bigboard[0].getStatus() !=  "tie") or (self.bigboard[3].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[5].getStatus() and self.bigboard[3].getStatus() != "incomplete" and self.bigboard[3].getStatus() != "tie") or (self.bigboard[6].getStatus() == self.bigboard[7].getStatus() and self.bigboard[7].getStatus() == self.bigboard[8].getStatus() and self.bigboard[6].getStatus() != "incomplete" and self.bigboard[6].getStatus() != "tie") or (self.bigboard[0].getStatus() == self.bigboard[3].getStatus() and self.bigboard[3].getStatus() == self.bigboard[6].getStatus() and self.bigboard[0].getStatus() != "incomplete" and self.bigboard[0].getStatus() != "tie") or (self.bigboard[1].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[7].getStatus() and self.bigboard[1].getStatus() != "incomplete" and self.bigboard[1].getStatus() != "tie") or (self.bigboard[2].getStatus() == self.bigboard[5].getStatus() and self.bigboard[5].getStatus() == self.bigboard[8].getStatus() and self.bigboard[2].getStatus() != "incomplete" and self.bigboard[2].getStatus() != "tie") or (self.bigboard[0].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[8].getStatus() and self.bigboard[0].getStatus() != "incomplete" and self.bigboard[0].getStatus() != "tie") or (self.bigboard[2].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[6].getStatus() and self.bigboard[2].getStatus() != "incomplete" and self.bigboard[2].getStatus() != "tie")):
+        if ((self.bigboard[0].getStatus() == self.bigboard[1].getStatus() and self.bigboard[1].getStatus() == self.bigboard[2].getStatus() and self.bigboard[0].getStatus() !=  "" and self.bigboard[0].getStatus() !=  "t") or (self.bigboard[3].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[5].getStatus() and self.bigboard[3].getStatus() != "" and self.bigboard[3].getStatus() != "t") or (self.bigboard[6].getStatus() == self.bigboard[7].getStatus() and self.bigboard[7].getStatus() == self.bigboard[8].getStatus() and self.bigboard[6].getStatus() != "" and self.bigboard[6].getStatus() != "t") or (self.bigboard[0].getStatus() == self.bigboard[3].getStatus() and self.bigboard[3].getStatus() == self.bigboard[6].getStatus() and self.bigboard[0].getStatus() != "" and self.bigboard[0].getStatus() != "t") or (self.bigboard[1].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[7].getStatus() and self.bigboard[1].getStatus() != "" and self.bigboard[1].getStatus() != "t") or (self.bigboard[2].getStatus() == self.bigboard[5].getStatus() and self.bigboard[5].getStatus() == self.bigboard[8].getStatus() and self.bigboard[2].getStatus() != "" and self.bigboard[2].getStatus() != "t") or (self.bigboard[0].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[8].getStatus() and self.bigboard[0].getStatus() != "" and self.bigboard[0].getStatus() != "t") or (self.bigboard[2].getStatus() == self.bigboard[4].getStatus() and self.bigboard[4].getStatus() == self.bigboard[6].getStatus() and self.bigboard[2].getStatus() != "" and self.bigboard[2].getStatus() != "t")):
             return True
         return False
     
     def bigjustplayed(self):
-        if (len(self.trace)%2==1):
+        if (self.depth%2==1):
             return 1
         else:
             return 2
 
     def bignextPlayer(self):
-        if (len(self.trace)%2 == 0):
+        if (self.depth%2 == 0):
             return 1
         else:
             return 2
     
     def bigmove(self, largeboardpos, smallboardpos):
         # smallboardpos = int(input("1-9 "+ str(self.bignextPlayer()) + " small " + str(largeboardpos) + " "))
-        if (( len(self.trace) == 0) or (self.isBoardFinished(self.trace[len(self.trace)-1][1]))):
+        if ((self.depth == 0) or (self.isBoardFinished(self.previousmove[1]))):
             while (smallboardpos < 1 or smallboardpos > 9 or self.bigboard[largeboardpos-1].isTaken(smallboardpos) or largeboardpos < 1 or largeboardpos > 9 or self.isBoardFinished(largeboardpos)):    
                 # smallboardpos = int(input("1-9 "+ str(self.bignextPlayer()) + " small " + str(largeboardpos) + " "))
                 # smallboardpos = random.randrange(1, 10)
                 # largeboardpos = random.randrange(1,10)
                 raise Exception("Invalid pos "+ str(largeboardpos) + " " + str(smallboardpos))
         else:
-            largeboardpos = self.trace[len(self.trace)-1][1]
+            largeboardpos = self.previousmove[1]
             while (smallboardpos < 1 or smallboardpos > 9 or self.bigboard[largeboardpos-1].isTaken(smallboardpos)):    
                 # smallboardpos = int(input("1-9 "+ str(self.bignextPlayer()) + " small " + str(largeboardpos) + " "))
                 # smallboardpos = random.randrange(1, 10)
                 raise Exception("Invalid pos "+ str(largeboardpos) + " " + str(smallboardpos))
-        
-        
         self.bigboard[largeboardpos-1].movesmallboard(smallboardpos, self.bignextPlayer())
-        self.trace.append((largeboardpos, smallboardpos))
+        self.previousmove = (largeboardpos, smallboardpos)
+        self.depth+=1
 
         if (self.isWon()):
             if (self.bigjustplayed() == 1):
-                self.status = "xwins"
+                self.status = "x"
                 # print("X wins!")
             else:
-                self.status = "owins"
+                self.status = "o"
                 # print("O wins!")
         #TODO change to isboardfinished
-        elif (self.bigboard[0].getStatus() != "incomplete" and self.bigboard[1].getStatus() != "incomplete" and self.bigboard[2].getStatus() != "incomplete" and self.bigboard[3].getStatus() != "incomplete" and self.bigboard[4].getStatus() != "incomplete" and self.bigboard[5].getStatus() != "incomplete" and self.bigboard[6].getStatus() != "incomplete" and self.bigboard[7].getStatus() != "incomplete" and self.bigboard[8].getStatus() != "incomplete"):
-            self.status = "tie"
+        elif (self.bigboard[0].getStatus() != "" and self.bigboard[1].getStatus() != "" and self.bigboard[2].getStatus() != "" and self.bigboard[3].getStatus() != "" and self.bigboard[4].getStatus() != "" and self.bigboard[5].getStatus() != "" and self.bigboard[6].getStatus() != "" and self.bigboard[7].getStatus() != "" and self.bigboard[8].getStatus() != ""):
+            self.status = "t"
             # print("Tie!")
     
     def isBoardFinished(self, pos):
-        if (self.bigboard[pos-1].getStatus() == "incomplete"):
+        if (self.bigboard[pos-1].getStatus() == ""):
             return False
         return True
     
@@ -230,27 +231,25 @@ class UltimateTicTacToe:
     def getboard(self):
         return self.bigboard
 
-    def setState(self, bigboard, trace, status):
-        for i in range(0, 9):
-            self.bigboard[i] = bigboard[i].deepCopys()
-        self.trace = copy.deepcopy(trace)
-        self.status = copy.deepcopy(status)
-
     def deepCopy(self):
-        copy = UltimateTicTacToe()
-        copy.setState(self.bigboard, self.trace, self.status)
-        return copy
+        copys = UltimateTicTacToe()
+        for i in range(0, 9):
+            copys.bigboard[i] = self.bigboard[i].deepCopys()
+        copys.status = copy.deepcopy(self.status)
+        copys.depth = self.depth
+        copys.previousmove = copy.deepcopy(self.previousmove)
+        return copys
 
     def getValidMoves(self):
         possiblemoves = []
-        if (len(self.trace) == 0 or self.isBoardFinished(self.trace[len(self.trace)-1][1])):
+        if (self.depth == 0 or self.isBoardFinished(self.previousmove[1])):
             for i in range(1, 10):
                 bigpos = i
                 for j in range(1,10):
                     if ((not self.bigboard[bigpos-1].isTaken(j)) and (not self.isBoardFinished(bigpos))):
                         possiblemoves.append((bigpos, j))
         else:
-            bigpos = self.trace[len(self.trace)-1][1]
+            bigpos = self.previousmove[1]
             for i in range(1, 10):
                 if ((not self.bigboard[bigpos-1].isTaken(i))):
                     possiblemoves.append((bigpos, i))
@@ -263,7 +262,6 @@ class Node:
         self.game = game
         self.visitCount = 0
         
-
 class MCTS:
     def __init__(self):
         self.root = Node(UltimateTicTacToe(), None)
@@ -287,15 +285,15 @@ class MCTS:
             for i in range(0, len(node.Children)):
                 x = node.Children[i]
                 value = 0
-                if (len(node.game.trace)%2 == 0):
-                    value = node.game.owins - node.game.xwins
+                if (x.game.depth % 2 == 0):
+                    value = x.game.owins - x.game.xwins
                 else:
-                    value = node.game.xwins-node.game.owins
+                    value = x.game.xwins-x.game.owins
                 if(x.visitCount == 0):
                     maxval = float(inf)
                     maxvalues.append(i)
                     continue
-                UCB = (value/ x.visitCount) + 2* (math.log(node.visitCount)/ x.visitCount)**(1/2)
+                UCB = (value/ x.visitCount) + math.sqrt(2)* math.sqrt((math.log(node.visitCount)/ x.visitCount))
                 if (maxval == None or UCB > maxval):
                     maxval = UCB
                     maxvalues = []
@@ -312,9 +310,9 @@ class MCTS:
             x = random.randrange(0,len(possiblemoves))
             botgame.bigmove(possiblemoves[x][0], possiblemoves[x][1])
         while (node != None):
-            if (botgame.status == 'xwins'):
+            if (botgame.status == 'x'):
                 node.game.xwins+=1
-            elif(botgame.status == 'owins'):
+            elif(botgame.status == 'o'):
                 node.game.owins+=1
             else:
                 node.game.ties+=1
@@ -333,7 +331,7 @@ class MCTS:
     def printtree(self, node, indents):
         if (node.visitCount == 0):
             return
-        print(indents + "(" + str(node.visitCount) + " " + str(node.game.trace) +" "+ str(node.game.xwins) + " "+ str(node.game.owins) + " " + str(node.game.ties) +")")
+        print(indents + "(" + str(node.visitCount) + " " + str(node.game.previousmove) + str(node.game.depth) +" "+ str(node.game.xwins) + " "+ str(node.game.owins) + " " + str(node.game.ties) +")")
         for x in node.Children:
             self.printtree(x, indents+"  ")
     
@@ -356,33 +354,25 @@ class MCTSBotPlayer:
         maxval = None
         bestpositions = []
         for i in range(0, len(self.currentnode.Children)):
-            if (self.player == 'x'):
-                if (maxval == None or maxval < (self.currentnode.game.xwins-self.currentnode.game.owins)/self.currentnode.visitCount):
-                    maxval = (self.currentnode.game.xwins-self.currentnode.game.owins)/self.currentnode.visitCount
-                    bestpositions = []
-                    bestpositions.append(self.currentnode.Children[i].game.trace[len(self.currentnode.Children[i].game.trace)-1])
-                elif(maxval == (self.currentnode.game.xwins-self.currentnode.game.owins)/self.currentnode.visitCount):
-                    bestpositions.append(self.currentnode.Children[i].game.trace[len(self.currentnode.Children[i].game.trace)-1])
-            else:
-                if (maxval == None or maxval < (self.currentnode.game.owins-self.currentnode.game.xwins)/self.currentnode.visitCount):
-                    maxval = (self.currentnode.game.owins-self.currentnode.game.xwins)/self.currentnode.visitCount
-                    bestpositions = []
-                    bestpositions.append(self.currentnode.Children[i].game.trace[len(self.currentnode.Children[i].game.trace)-1])
-                elif(maxval == (self.currentnode.game.owins-self.currentnode.game.xwins)/self.currentnode.visitCount):
-                    bestpositions.append(self.currentnode.Children[i].game.trace[len(self.currentnode.Children[i].game.trace)-1])
+            if (maxval == None or maxval < (self.currentnode.visitCount)):
+                maxval = self.currentnode.visitCount
+                bestpositions = []
+                bestpositions.append(self.currentnode.Children[i].game.previousmove)
+            elif(maxval == self.currentnode.visitCount):
+                bestpositions.append(self.currentnode.Children[i].game.previousmove)
         x = random.randrange(0, len(bestpositions))
         self.currentgame.bigmove(bestpositions[x][0], bestpositions[x][1])
-        # print("played " + self.player +": " + str(self.currentgame.trace))
+        # print("played " + self.player +": " + str(self.currentgame.previousmove))
         
     def follow(self):
         if (len(self.currentnode.Children) == 0 and self.currentnode.game.status == ''):
             self.mcts.search(self.currentnode, 100)
         for i in range(0, len(self.currentnode.Children)):
-            if (self.currentgame.trace[-1] == self.currentnode.Children[i].game.trace[-1]):
+            if (self.currentgame.previousmove == self.currentnode.Children[i].game.previousmove):
                 self.currentnode = self.currentnode.Children[i]
-                # print("Followed "+self.player+ ": " + str(self.currentnode.game.trace))
+                # print("Followed "+self.player+ ": " + str(self.currentnode.game.previousmove))
                 return
-        raise Exception("Cannot follow" + str(self.currentgame.trace) + str(self.currentnode.game.trace))
+        raise Exception("Cannot follow" + str(self.currentgame.previousmove) + str(self.currentnode.game.previousmove))
 
 class RandomPlayer():
     def __init__(self, game):
@@ -396,60 +386,66 @@ class RandomPlayer():
     def follow(self):
         pass
 
-# ultimategame = UltimateTicTacToe()
-time1 = time.time()
-mcts = MCTS()
-runnum = 1000
-mcts.search(mcts.root, runnum)
-mcts.save("C:/Users/Joshua Ni/Documents/UTTTMCTS/Test.p")
-time2 = time.time()
-print("average time for run:" + str((time2-time1)/runnum))
-print("totaltime:" + str(time2-time1))
-# mcts1 = MCTS()
-# mcts2 = MCTS()
-# mcts1.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/1000MCTS.p")
-# mcts2.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/2000MCTS.p")
-# isOBot = True
-# isXBot = True
-# isOsTurn = False
-# for i in range(0, 20):
-#     BotOPlayer = MCTSBotPlayer('o', ultimategame, mcts2)
-#     BotXPlayer = MCTSBotPlayer('x', ultimategame, mcts1)
-#     # BotXPlayer = RandomPlayer(ultimategame)
-#     while(ultimategame.status == ''):
-#         print("\033c", end = '')
-#         ultimategame.printBoard()
-#         if (isOsTurn):
-#             if (isOBot):
-#                 BotOPlayer.chooseandPlayMove()
-#                 BotOPlayer.follow()
-#             else:
-#                 print("Enter big pos and small pos ")
-#                 bigpos, smallpos = int(input().split())
-#                 ultimategame.bigmove(bigpos, smallpos)
-#             if (isXBot):
-#                 BotXPlayer.follow()
-#         else:
-#             if (isXBot):
-#                 BotXPlayer.chooseandPlayMove()
-#                 BotXPlayer.follow()
-#             else:
-#                 print("Enter big pos and small pos ")
-#                 bigpos, smallpos = int(input().split())
-#                 ultimategame.bigmove(bigpos, smallpos)
-#             if (isOBot):
-#                 BotOPlayer.follow()
-#         isOsTurn = not isOsTurn
-#     if (ultimategame.status == 'xwins'):
-#         # print("X Wins!")
-#         ultimategame.xwins+=1
-#     elif (ultimategame.status == 'owins'):
-#         # print("O Wins!")
-#         ultimategame.owins+=1
-#     elif (ultimategame.status == 'tie'):
-#         # print("Tie!")
-#         ultimategame.ties+=1
-#     ultimategame.reset()
+def playgame():
+    ultimategame = UltimateTicTacToe()
+    mcts1 = MCTS()
+    mcts2 = MCTS()
+    mcts1.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS100000.p")
+    # mcts2.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS100000.p")
+    isOBot = True
+    isXBot = True
+    isOsTurn = False
+    for i in range(0, 40):
+        # BotOPlayer = MCTSBotPlayer('o', ultimategame, mcts2)
+        BotXPlayer = MCTSBotPlayer('x', ultimategame, mcts1)
+        BotOPlayer = RandomPlayer(ultimategame)
+        # BotXPlayer = RandomPlayer(ultimategame)
+        while(ultimategame.status == ''):
+            print("\033c", end = '')
+            ultimategame.printBoard()
+            if (isOsTurn):
+                if (isOBot):
+                    BotOPlayer.chooseandPlayMove()
+                    BotOPlayer.follow()
+                else:
+                    print("Enter big pos and small pos ")
+                    bigpos, smallpos = int(input().split())
+                    ultimategame.bigmove(bigpos, smallpos)
+                if (isXBot):
+                    BotXPlayer.follow()
+            else:
+                if (isXBot):
+                    BotXPlayer.chooseandPlayMove()
+                    BotXPlayer.follow()
+                else:
+                    print("Enter big pos and small pos ")
+                    bigpos, smallpos = int(input().split())
+                    ultimategame.bigmove(bigpos, smallpos)
+                if (isOBot):
+                    BotOPlayer.follow()
+            isOsTurn = not isOsTurn
+        if (ultimategame.status == 'x'):
+            # print("X Wins!")
+            ultimategame.xwins+=1
+        elif (ultimategame.status == 'o'):
+            # print("O Wins!")
+            ultimategame.owins+=1
+        elif (ultimategame.status == 't'):
+            # print("Tie!")
+            ultimategame.ties+=1
+        ultimategame.reset()
+        
+    print(str(ultimategame.xwins) + " " + str(ultimategame.owins) + " " + str(ultimategame.ties))
     
-# print(str(ultimategame.xwins) + " " + str(ultimategame.owins) + " " + str(ultimategame.ties))
-# # mcts.printtree(mcts.root, "")
+def training(runnum):
+    time1 = time.time()
+    mcts = MCTS()
+    mcts.search(mcts.root, runnum)
+    mcts.save("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS" + str(runnum) + ".p")
+    time2 = time.time()
+    print("average time for run:" + str((time2-time1)/runnum))
+    print("totaltime:" + str(time2-time1))
+    # mcts.printtree(mcts.root, "")
+
+training(1000000)
+# playgame()
