@@ -327,12 +327,8 @@ class MCTS:
         self.simulateAndBackPropagate(x)
 
     def search(self, node, runnum):
-        time1 = time.time()
         for i in range(0, runnum):
             self.run(node)
-        time2 = time.time()
-        print("average time for run:" + str((time2-time1)/runnum))
-        print("totaltime:" + str(time2-time1))
 
     def printtree(self, node, indents):
         if (node.visitCount == 0):
@@ -400,55 +396,60 @@ class RandomPlayer():
     def follow(self):
         pass
 
-ultimategame = UltimateTicTacToe()
-# mcts = MCTS()
-# mcts.search(mcts.root, 1000000)
-# mcts.save("C:/Users/Joshua Ni/Documents/UTTTMCTS/Test.p")
-mcts1 = MCTS()
-mcts2 = MCTS()
-mcts1.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/1000MCTS.p")
-mcts2.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/2000MCTS.p")
-isOBot = True
-isXBot = True
-isOsTurn = False
-for i in range(0, 20):
-    BotOPlayer = MCTSBotPlayer('o', ultimategame, mcts2)
-    BotXPlayer = MCTSBotPlayer('x', ultimategame, mcts1)
-    # BotXPlayer = RandomPlayer(ultimategame)
-    while(ultimategame.status == ''):
-        print("\033c", end = '')
-        ultimategame.printBoard()
-        if (isOsTurn):
-            if (isOBot):
-                BotOPlayer.chooseandPlayMove()
-                BotOPlayer.follow()
-            else:
-                print("Enter big pos and small pos ")
-                bigpos, smallpos = int(input().split())
-                ultimategame.bigmove(bigpos, smallpos)
-            if (isXBot):
-                BotXPlayer.follow()
-        else:
-            if (isXBot):
-                BotXPlayer.chooseandPlayMove()
-                BotXPlayer.follow()
-            else:
-                print("Enter big pos and small pos ")
-                bigpos, smallpos = int(input().split())
-                ultimategame.bigmove(bigpos, smallpos)
-            if (isOBot):
-                BotOPlayer.follow()
-        isOsTurn = not isOsTurn
-    if (ultimategame.status == 'xwins'):
-        # print("X Wins!")
-        ultimategame.xwins+=1
-    elif (ultimategame.status == 'owins'):
-        # print("O Wins!")
-        ultimategame.owins+=1
-    elif (ultimategame.status == 'tie'):
-        # print("Tie!")
-        ultimategame.ties+=1
-    ultimategame.reset()
+# ultimategame = UltimateTicTacToe()
+time1 = time.time()
+mcts = MCTS()
+runnum = 1000
+mcts.search(mcts.root, runnum)
+mcts.save("C:/Users/Joshua Ni/Documents/UTTTMCTS/Test.p")
+time2 = time.time()
+print("average time for run:" + str((time2-time1)/runnum))
+print("totaltime:" + str(time2-time1))
+# mcts1 = MCTS()
+# mcts2 = MCTS()
+# mcts1.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/1000MCTS.p")
+# mcts2.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/2000MCTS.p")
+# isOBot = True
+# isXBot = True
+# isOsTurn = False
+# for i in range(0, 20):
+#     BotOPlayer = MCTSBotPlayer('o', ultimategame, mcts2)
+#     BotXPlayer = MCTSBotPlayer('x', ultimategame, mcts1)
+#     # BotXPlayer = RandomPlayer(ultimategame)
+#     while(ultimategame.status == ''):
+#         print("\033c", end = '')
+#         ultimategame.printBoard()
+#         if (isOsTurn):
+#             if (isOBot):
+#                 BotOPlayer.chooseandPlayMove()
+#                 BotOPlayer.follow()
+#             else:
+#                 print("Enter big pos and small pos ")
+#                 bigpos, smallpos = int(input().split())
+#                 ultimategame.bigmove(bigpos, smallpos)
+#             if (isXBot):
+#                 BotXPlayer.follow()
+#         else:
+#             if (isXBot):
+#                 BotXPlayer.chooseandPlayMove()
+#                 BotXPlayer.follow()
+#             else:
+#                 print("Enter big pos and small pos ")
+#                 bigpos, smallpos = int(input().split())
+#                 ultimategame.bigmove(bigpos, smallpos)
+#             if (isOBot):
+#                 BotOPlayer.follow()
+#         isOsTurn = not isOsTurn
+#     if (ultimategame.status == 'xwins'):
+#         # print("X Wins!")
+#         ultimategame.xwins+=1
+#     elif (ultimategame.status == 'owins'):
+#         # print("O Wins!")
+#         ultimategame.owins+=1
+#     elif (ultimategame.status == 'tie'):
+#         # print("Tie!")
+#         ultimategame.ties+=1
+#     ultimategame.reset()
     
-print(str(ultimategame.xwins) + " " + str(ultimategame.owins) + " " + str(ultimategame.ties))
+# print(str(ultimategame.xwins) + " " + str(ultimategame.owins) + " " + str(ultimategame.ties))
 # # mcts.printtree(mcts.root, "")
