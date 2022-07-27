@@ -242,6 +242,8 @@ class UltimateTicTacToe:
 
     def getValidMoves(self):
         possiblemoves = []
+        if (self.status !=''):
+            return possiblemoves
         if (self.depth == 0 or self.isBoardFinished(self.previousmove[1])):
             for i in range(1, 10):
                 bigpos = i
@@ -342,13 +344,17 @@ class MCTS:
         self.root = pickle.load(open(filename, "rb"))
 
 class MCTSBotPlayer:
-    def __init__(self, player, game, mcts):
+    def __init__(self, game, mcts):
         self.mcts = mcts
-        self.player = player
+        # mcts.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS100000.p")
         self.currentgame = game
         self.currentnode = self.mcts.root
     
     def chooseandPlayMove(self):
+        if (self.currentgame.status != ''):
+            return
+        if (self.currentgame.previousmove != None):
+            self.follow()
         if(len(self.currentnode.Children) == 0):
             self.mcts.search(self.currentnode, 100)
         maxval = None
@@ -362,6 +368,7 @@ class MCTSBotPlayer:
                 bestpositions.append(self.currentnode.Children[i].game.previousmove)
         x = random.randrange(0, len(bestpositions))
         self.currentgame.bigmove(bestpositions[x][0], bestpositions[x][1])
+        self.follow()
         # print("played " + self.player +": " + str(self.currentgame.previousmove))
         
     def follow(self):
@@ -379,6 +386,8 @@ class RandomPlayer():
         self.currentgame = game
 
     def chooseandPlayMove(self):
+        if (self.currentgame.status != ''):
+            return
         possiblemoves = self.currentgame.getValidMoves()
         x = random.randrange(0,len(possiblemoves))
         self.currentgame.bigmove(possiblemoves[x][0], possiblemoves[x][1])
@@ -390,14 +399,14 @@ def playgame():
     ultimategame = UltimateTicTacToe()
     mcts1 = MCTS()
     mcts2 = MCTS()
-    mcts1.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS100000.p")
+    # mcts1.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS100000.p")
     # mcts2.load("C:/Users/Joshua Ni/Documents/UTTTMCTS/MCTS100000.p")
     isOBot = True
     isXBot = True
     isOsTurn = False
     for i in range(0, 40):
         # BotOPlayer = MCTSBotPlayer('o', ultimategame, mcts2)
-        BotXPlayer = MCTSBotPlayer('x', ultimategame, mcts1)
+        BotXPlayer = MCTSBotPlayer(ultimategame, mcts1)
         BotOPlayer = RandomPlayer(ultimategame)
         # BotXPlayer = RandomPlayer(ultimategame)
         while(ultimategame.status == ''):
@@ -406,23 +415,17 @@ def playgame():
             if (isOsTurn):
                 if (isOBot):
                     BotOPlayer.chooseandPlayMove()
-                    BotOPlayer.follow()
                 else:
                     print("Enter big pos and small pos ")
                     bigpos, smallpos = int(input().split())
                     ultimategame.bigmove(bigpos, smallpos)
-                if (isXBot):
-                    BotXPlayer.follow()
             else:
                 if (isXBot):
                     BotXPlayer.chooseandPlayMove()
-                    BotXPlayer.follow()
                 else:
                     print("Enter big pos and small pos ")
                     bigpos, smallpos = int(input().split())
                     ultimategame.bigmove(bigpos, smallpos)
-                if (isOBot):
-                    BotOPlayer.follow()
             isOsTurn = not isOsTurn
         if (ultimategame.status == 'x'):
             # print("X Wins!")
@@ -447,5 +450,5 @@ def training(runnum):
     print("totaltime:" + str(time2-time1))
     # mcts.printtree(mcts.root, "")
 
-training(1000000)
+# training(1000000)
 # playgame()
