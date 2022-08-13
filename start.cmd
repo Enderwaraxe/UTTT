@@ -1,0 +1,1 @@
+python app.py --policyValueNet "C:/Users/Joshua Ni/Downloads/policy_value_net_100000.pt" --device cuda

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ultimate Tic Tac Toe</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'uttt.css')}}"/>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="{{url_for('static', filename = 'uttt.js')}}"></script>
+  </head>
+  <body>
+    <div id = "bigboard">
+      <div class="bigboard container">
+        {% for smallBoard in bigBoard %}
+        {% set bigPos = loop.index0 %}
+        <div class = "smallboard container">
+          {% for position in smallBoard %}
+          {% set smallPos = loop.index0 %}
+          {% if position == 1 %}
+            <img class="unclickable" src ="{{url_for('static', filename = 'x.png')}}"/>
+          {% elif position == 2 %}
+            <img class="unclickable" src ="{{url_for('static', filename = 'o.png')}}"/>
+          {% elif position == 3 %}
+            <div class = "clickable" onclick="play('{{bigPos}}', '{{smallPos}}')">
+            </div>
+          {%else%}
+            <div class="unclickable">
+            </div>
+          {% endif %}
+          {% endfor %}
+          {% if allStatus[bigPos] == "x" %}
+          <div class="overlay"><img class="image" src="{{url_for('static', filename = 'x.png')}}"/></div>
+          {% elif allStatus[bigPos] == "o" %}
+          <div class="overlay"><img class="image" src="{{url_for('static', filename = 'o.png')}}"/></div>
+          {% elif allStatus[bigPos] == "t" %}
+          <div class="overlay"><img class="image" src="{{url_for('static', filename = 't.png')}}"/></div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        {% if bigStat== "x" %}
+          <div class="overlay" id = "endimage"><img class="image" src="{{url_for('static', filename = 'x.png')}}"/></div>
+        {% elif bigStat == "o" %}
+          <div class="overlay" id = "endimage"><img class="image" src="{{url_for('static', filename = 'o.png')}}"/></div>
+        {% elif bigStat == "t" %}
+        <div class="overlay" id = "endimage"><img class="image" src="{{url_for('static', filename = 't.png')}}"/></div>
+          {% endif %}
+    </div>
+    </div>
+    <div class = "settings">
+      <label id="xplayer" class = "settingitem">X Player:</label>
+      <select name="xplayer" id="xplayerdropdown" class = "settingitem">
+        <option value="Human" selected>Human</option>
+        <option value="HareBot">Hare Bot</option>
+        <option value="TortiseBot">Tortise Bot</option>
+      </select>
+      <label id = "Oplayer" class = "settingitem">O Player:</label>
+      <select name="oplayer" id="oplayerdropdown" class = "settingitem">
+        <option value="Human" selected>Human</option>
+        <option value="HareBot">Hare Bot</option>
+        <option value="TortiseBot">Tortise Bot</option>
+      </select>
+      <button id = "start" type="button" onclick="start()" class = "settingitem">Start</button>
+    </div>
+    <!-- <h2>Both Human</h2>
+    <label class="switch" id = "humanswitch">
+      <input type="checkbox" onclick="isBothHuman(this)" id = "humanswtichcheck">
+      <span class="slider round"></span>
+    </label>    
+    <h2>Is X a Bot</h2>
+    <label class="switch" id = "botswitch">
+      <input type="checkbox" onclick="isBot(this)" id = "botswitchcheck">
+      <span class="slider round" id = "botslider"></span>
+    </label>     -->
+    
+  </body>
+
+</html>

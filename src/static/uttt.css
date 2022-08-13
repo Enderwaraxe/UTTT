@@ -1,0 +1,63 @@
+.settings {
+    display: grid;
+    grid-template-columns: max-content max-content max-content max-content max-content;
+    grid-template-rows: 1;
+    gap: 10px;
+    width: fit-content;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.settingitem {
+    font-size: 24px;
+}
+
+.bigboard {
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(3, fit-content(1000px));
+    grid-template-rows: repeat(3, fit-content(1000px));
+    gap: 10px;
+    background-color: black;
+    width: fit-content;
+}
+
+.container {
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    opacity: 0.8;
+}
+
+.image {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+
+.smallboard {
+    display: grid;
+    grid-template-columns: repeat(3, fit-content(300px));
+    grid-template-rows: repeat(3, fit-content(300px));
+    gap: 5px;
+    background-color: blue;
+}
+
+.unclickable {
+    background-color: lightgray;
+    height: 80px;
+    width: 80px;
+}
+
+.clickable {
+    background-color: white;
+    height: 80px;
+    width: 80px;
+}
