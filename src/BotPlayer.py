@@ -1,8 +1,8 @@
 import random
 from NeuralMonteCarloTreeSearch import NMCTS
 class NMCTSBotPlayer:
-    def __init__(self, game, policyNet, runNum):
-        self.nmcts = NMCTS(policyNet)
+    def __init__(self, game, policyNet, runNum, device):
+        self.nmcts = NMCTS(policyNet, device)
         self.currentGame = game
         self.currentNode = self.nmcts.root
         self.runNum = runNum

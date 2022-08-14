@@ -1,2 +1,6 @@
+# requirements.txt
 numpy==1.23.1
-torch==1.12.1+cu116
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.12.1+cpu
+gunicorn
+flask

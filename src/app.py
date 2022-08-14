@@ -9,6 +9,8 @@ import argparse
 app = Flask(__name__)
 policyNet = None
 context = {}
+device = "cpu"
+policyFilePath = "policy_value_net_100000.pt"
 class Game:
     def __init__(self) -> None:
         self.uttt = UltimateTicTacToe()
@@ -47,7 +49,7 @@ def displayBoard(isHumanNext, game):
 @app.route("/start")
 def start():
     print("created")
-    global context
+    global context, device
     user = request.headers.get('User-Agent')
     game = context[user]
     game.isOTurn = False
@@ -56,15 +58,15 @@ def start():
     game.uttt = UltimateTicTacToe()
 
     if (game.xPlayer == "TortiseBot"):
-        game.botX = NMCTSBotPlayer(game.uttt, policyNet, 1000)
+        game.botX = NMCTSBotPlayer(game.uttt, policyNet, 1000, device)
     elif(game.xPlayer == "HareBot"):
-        game.botX = NMCTSBotPlayer(game.uttt, policyNet, 1)
+        game.botX = NMCTSBotPlayer(game.uttt, policyNet, 1, device)
     else:
         game.botX = None
     if (game.oPlayer == "TortiseBot"):
-        game.botO = NMCTSBotPlayer(game.uttt, policyNet, 1000)
+        game.botO = NMCTSBotPlayer(game.uttt, policyNet, 1000, device)
     elif(game.oPlayer == "HareBot"):
-        game.botO = NMCTSBotPlayer(game.uttt, policyNet, 1)
+        game.botO = NMCTSBotPlayer(game.uttt, policyNet, 1, device)
     else:
         game.botO = None
     context
@@ -75,11 +77,13 @@ def start():
 
 @app.route("/")
 def root():
-    global context
+    global context, policyFilePath, device, policyNet
     cleanup()
+    policyNet = loadPolicyValueNet(policyFilePath, device)
     user = request.headers.get('User-Agent')
     game = Game()
     context[user] = game
+    print("loading policy from: " + policyFilePath + ", " + device)
     return displayBoard(False, game)
 
 @app.route("/play")
@@ -119,9 +123,4 @@ def botplay():
         return displayBoard(True, game)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--policyValueNet", required=True)
-    parser.add_argument("--device", default="cpu")
-    args = parser.parse_args()
-    policyNet = loadPolicyValueNet(args.policyValueNet, args.device)
-    app.run()
+    app.run(host='0.0.0.0', port=8888)

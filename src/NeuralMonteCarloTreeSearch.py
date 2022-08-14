@@ -17,9 +17,10 @@ class Node:
         self.moveProbability = None
         
 class NMCTS:
-    def __init__(self, policyNet):
+    def __init__(self, policyNet, device):
         self.root = Node(UltimateTicTacToe(), None)
         self.policyNet = policyNet
+        self.device = device
 
     def expand(self, node):
         if (len(node.children) > 0 or node.game.status != ''):
@@ -58,7 +59,7 @@ class NMCTS:
         input4x9x9 = self.getInput4x9x9(node.game)
         input1x4x9x9 = np.expand_dims(input4x9x9, axis=0)
         input1x4x9x9 = torch.from_numpy(input1x4x9x9)
-        input1x4x9x9 = input1x4x9x9.to(device=torch.device('cuda'), dtype=torch.float32)
+        input1x4x9x9 = input1x4x9x9.to(device=torch.device(self.device), dtype=torch.float32)
         with torch.no_grad():
             policyLogits, actionValues, stateValue = self.policyNet(input1x4x9x9)
         policyLogitsTensor = policyLogits[0].cpu()
