@@ -1,4 +1,4 @@
-This is a AlphaZero-like AI for playing Ulitimate Tic Tac Toe.
+This is a AlphaZero-like AI for playing Ultimate Tic Tac Toe.
 
 docker build -t uttt_app .
 docker run -it -p 8000:8888 uttt_app
